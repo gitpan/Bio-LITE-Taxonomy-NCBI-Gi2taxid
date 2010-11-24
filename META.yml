@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Bio-LITE-Taxonomy-NCBI-Gi2taxid
-version:            0.01
+version:            0.02
 abstract:           Mappings of NCBI GIs to Taxids fast and with very low memory footprint.
 author:
     - Miguel Pignatelli <emepyc@gmail.com>
@@ -17,7 +17,7 @@ no_index:
     directory:
         - t
         - inc
-generated_by:       ExtUtils::MakeMaker version 6.56
+generated_by:       ExtUtils::MakeMaker version 6.55_02
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4

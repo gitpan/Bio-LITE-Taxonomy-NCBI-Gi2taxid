@@ -10,4 +10,5 @@ t/pod.t
 t/Gi2taxid.t
 t/depTax.t
 t/data/dict.in
+t/data/dict.bin
 META.yml                                 Module meta-data (added by MakeMaker)

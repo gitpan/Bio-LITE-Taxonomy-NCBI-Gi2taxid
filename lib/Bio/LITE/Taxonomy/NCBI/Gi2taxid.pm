@@ -1,4 +1,4 @@
-2package Bio::LITE::Taxonomy::NCBI::Gi2taxid;
+package Bio::LITE::Taxonomy::NCBI::Gi2taxid;
 
 =head1 NAME
 
@@ -102,7 +102,7 @@ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 
 @EXPORT = ();   # Only qualified exports are allowed
 @EXPORT_OK = qw(new_dict);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 sub new
   {

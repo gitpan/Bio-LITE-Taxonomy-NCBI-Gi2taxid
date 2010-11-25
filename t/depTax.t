@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use Test::More;
+use Bio::LITE::Taxonomy::NCBI::Gi2taxid;
 
 eval { require Bio::LITE::Taxonomy };
 plan skip_all => "Bio::LITE::Taxonomy not installed" if $@;
@@ -11,7 +12,7 @@ is((ref $in), 'GLOB', "Dictionary open for reading");
 my $dict = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict => $in);
 isa_ok($dict,"Bio::LITE::Taxonomy::NCBI::Gi2taxid","as filehandle");
 
-my $dict2 = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict => 'dict.bin');
+my $dict2 = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict => 't/data/dict.bin');
 isa_ok($dict2,"Bio::LITE::Taxonomy::NCBI::Gi2taxid","as filename");
 
 is($dict->get_taxid(0),0,"Uninitilized values");

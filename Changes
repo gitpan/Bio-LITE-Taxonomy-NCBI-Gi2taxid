@@ -8,3 +8,6 @@ Revision history for Bio-LITE-Taxonomy-NCBI-Gi2taxid
 
 0.03	Thu Nov 25 10:10:34 2010
 	Bug fixes in test scripts
+
+0.04	Sat May 28 11:21:41 2011
+	Avoided copy of dictionary in final object (used by ref)

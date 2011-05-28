@@ -102,7 +102,7 @@ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 
 @EXPORT = ();   # Only qualified exports are allowed
 @EXPORT_OK = qw(new_dict);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 sub new
   {
@@ -136,7 +136,7 @@ sub _build_dict
     $self->{save_mem} && return;
     my $n = sysread( $self->{fh}, $data, -s $self->{fh}  );
     croak "Can't read input file" unless ($n);
-    $self->{dict} = $data;
+    $self->{dict} = \$data;
   }
 
 sub get_taxid
@@ -153,7 +153,7 @@ sub _direct_lookup {
     sysread($self->{fh},$taxid,4,);
     return (unpack "N",$taxid);
   } else {
-    return (unpack "N",substr($self->{dict},$gi*4,4));
+    return (unpack "N",substr(${$self->{dict}},$gi*4,4));
   }
 }
 

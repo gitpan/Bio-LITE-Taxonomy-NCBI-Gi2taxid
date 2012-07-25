@@ -35,6 +35,8 @@ The original mapping files can be downloaded from the NCBI site at the following
 
 This function creates a new binary dictionary from the NCBI mapping file. The file should be uncompressed before being passed to the script. The function accepts the following parameters:
 
+*WARNING* version 0.05 uses a more compacted memory file. This means that binary files created with earlier versions will not work with this one and vice-versa. You need to create the new binary db with this version.
+
 =over 4
 
 =item in
@@ -102,7 +104,7 @@ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 
 @EXPORT = ();   # Only qualified exports are allowed
 @EXPORT_OK = qw(new_dict);
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 sub new
   {
@@ -148,12 +150,15 @@ sub get_taxid
 sub _direct_lookup {
   my ($self,$gi) = @_;
   if ($self->{save_mem}){
-    my $taxid;
+    my $taxidBytes;
     sysseek ($self->{fh},$gi*4,0);
-    sysread($self->{fh},$taxid,4,);
-    return (unpack "N",$taxid);
+    sysread($self->{fh},$taxidBytes,3);
+    my ($taxid1, $taxid2, $taxid3) = unpack "CCC", $taxidBytes;
+    return $taxid3 | $taxid2 << 8 | $taxid1 << 16 | 0 << 24 ;
   } else {
-    return (unpack "N",substr(${$self->{dict}},$gi*4,4));
+    my ($taxid1, $taxid2, $taxid3) = unpack "CCC", substr(${$self->{dict}},$gi*4,4);
+    my $taxid = $taxid3 | $taxid2 << 8 | $taxid1 << 16 | 0 << 24 ;
+    return $taxid;
   }
 }
 
@@ -184,12 +189,18 @@ sub new_dict {
   croak "$args{in} is empty" unless (defined $last_line);
   my ($last_val) = split /\t/, $last_line;
 
-  my $bin = 0;
-  substr($bin,$_*4,4,pack ("N",0)) for (0..$last_val);
+  my $bin= "\0" x (4 * ($last_val+1));
 
   while (<$infh>) {
+    chomp;
     my ($key,$val) = split /\t/;
-    substr($bin,$key*4,4,pack("N",$val));
+    my ($taxid1, $taxid2, $taxid3, $taxid4) = unpack("CCCC", pack("N", $val));
+
+    substr($bin, $key*4, 1, pack("C", $taxid2));
+    substr($bin, $key*4+1, 1, pack("C", $taxid3));
+    substr($bin, $key*4+2, 1, pack("C", $taxid4));
+
+#    substr($bin,$key*4,4,pack("N",$val));
   }
   close ($infh);
   print {$outfh} $bin;

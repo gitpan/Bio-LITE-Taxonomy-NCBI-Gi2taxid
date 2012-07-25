@@ -28,7 +28,7 @@ close($out);
 is(( -s "t/data/dict.bin" ), 24, "Dictionary creation from filehandle");
 
 eval {
-  new_dict (in=>"t/data/dict.in",
+ new_dict (in=>"t/data/dict.in",
             out=>"t/data/dict.bin");
 };
 ok ($@ eq "","");
@@ -43,6 +43,23 @@ eval {
   my $wrongDict = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict => "t/data/dict.in");
 };
 like ($@,qr/ERROR/,"Error with text dictionaries");
+
+
+my $dict = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict=>'t/data/dict.bin', savemem => 0);
+my $taxid = $dict->get_taxid(5);
+is ($taxid, 23415, "Error getting taxid from gi");
+
+$taxid = $dict->get_taxid(1);
+is ($taxid, 1, "Error getting taxid from gi");
+
+$dict = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict=>'t/data/dict.bin', savemem => 1);
+$taxid = $dict->get_taxid(5);
+is ($taxid, 23415, "Error getting taxid from gi");
+
+$taxid = $dict->get_taxid(1);
+is ($taxid, 1, "Error getting taxid from gi");
+
+#$taxid = $dict->get_taxid(6);
 
 
 done_testing();

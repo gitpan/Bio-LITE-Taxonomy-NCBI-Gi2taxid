@@ -17,3 +17,6 @@ Revision history for Bio-LITE-Taxonomy-NCBI-Gi2taxid
         you have to recreate binary files with this version
 
         The creation of the database is now much more faster.
+
+0.06    Sat Jul 27 22:28:01 2012
+        Fixed a couple of issues with the documentation

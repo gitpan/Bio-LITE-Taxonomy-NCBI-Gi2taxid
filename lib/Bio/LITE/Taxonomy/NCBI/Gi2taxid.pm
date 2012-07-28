@@ -2,10 +2,11 @@ package Bio::LITE::Taxonomy::NCBI::Gi2taxid;
 
 =head1 NAME
 
-Bio::LITE::Taxonomy::NCBI::Gi2taxid - Mappings of NCBI GIs to Taxids fast and with very low memory footprint.
+Bio::LITE::Taxonomy::NCBI::Gi2taxid - Mappings of NCBI GI's to Taxids fast and with very low memory footprint.
+
 =head1 SYNOPSIS
 
-Creation of a new Taxid to GI dictionary (binary lookup file):
+Creation of a new Taxid to GI dictionary (binary mapping file):
 
   use Bio::LITE::Taxonomy::NCBI::Gi2taxid qw/new_dict/;
 
@@ -16,14 +17,14 @@ Usage of the dictionary:
 
   use Bio::LITE::Taxonomy::NCBI::Gi2taxid;
 
-  my $dict = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict=>"dict.in");
+  my $dict = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict=>"gi_taxid_prot.bin");
   my $taxid = $dict->get_taxid(12553);
 
 =head1 DESCRIPTION
 
-The NCBI site offers a file to map gene and protein sequences (GIs) with their corresponding taxon of origin (Taxids). If you want to use this information inside a Perl script you will find that (given the high amount of sequences available) it is fairly inefficient to store this information in a regular hash. Only for creating such a hash you will need more than 10 GBs of system memory.
+The NCBI site offers a file to map gene and protein sequences (GIs) with their corresponding taxon of origin (Taxids). If you want to use this information inside a Perl script you will find that (given the high amount of sequences available) it is fairly inefficient to store this information in, for example, a regular hash. Only for creating such a hash you will need more than 10 GBs of system memory.
 
-This is a very simple module that has been designed to efficiently map NCBI GIs to Taxids with speed as the primary goal. It is designed to be able to process a high number of GIs very fast and with low memory usage. It is even faster than using a SQL database to retrieve the mappings or using a local DBHash.
+This is a very simple module that has been designed to efficiently map NCBI GIs to Taxids with speed as the primary goal. It is designed to retrieve taxids from GIs very fast and with low memory usage. It is even faster than using a SQL database to retrieve the mappings or using a local DBHash.
 
 To achieve this, it uses a binary index that can be created with the function C<new_dict>. This index has to be created one time for each mapping file.
 
@@ -104,7 +105,7 @@ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 
 @EXPORT = ();   # Only qualified exports are allowed
 @EXPORT_OK = qw(new_dict);
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 sub new
   {

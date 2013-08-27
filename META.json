@@ -1,10 +1,10 @@
 {
-   "abstract" : "Mappings of NCBI GIs to Taxids fast and with very low memory footprint.",
+   "abstract" : "Mappings of NCBI GI's to Taxids fast and with very low memory footprint.",
    "author" : [
       "Miguel Pignatelli <emepyc@gmail.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.112150",
+   "generated_by" : "ExtUtils::MakeMaker version 6.66, CPAN::Meta::Converter version 2.131560",
    "license" : [
       "perl_5"
    ],
@@ -22,21 +22,21 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : 0
+            "ExtUtils::MakeMaker" : "0"
          }
       },
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : 0
+            "ExtUtils::MakeMaker" : "0"
          }
       },
       "runtime" : {
          "requires" : {
             "File::Tail" : "0.96",
-            "Test::More" : 0
+            "Test::More" : "0"
          }
       }
    },
    "release_status" : "stable",
-   "version" : "0.05"
+   "version" : "0.07"
 }

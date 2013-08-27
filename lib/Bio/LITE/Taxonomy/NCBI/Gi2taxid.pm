@@ -105,7 +105,7 @@ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 
 @EXPORT = ();   # Only qualified exports are allowed
 @EXPORT_OK = qw(new_dict);
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 sub new
   {
@@ -157,7 +157,10 @@ sub _direct_lookup {
     my ($taxid1, $taxid2, $taxid3) = unpack "CCC", $taxidBytes;
     return $taxid3 | $taxid2 << 8 | $taxid1 << 16 | 0 << 24 ;
   } else {
-    my ($taxid1, $taxid2, $taxid3) = unpack "CCC", substr(${$self->{dict}},$gi*4,4);
+    no warnings qw/substr/;
+    my $v = substr(${$self->{dict}}, $gi*4, 4);
+    return 0 unless ($v);
+    my ($taxid1, $taxid2, $taxid3) = unpack "CCC", $v;
     my $taxid = $taxid3 | $taxid2 << 8 | $taxid1 << 16 | 0 << 24 ;
     return $taxid;
   }

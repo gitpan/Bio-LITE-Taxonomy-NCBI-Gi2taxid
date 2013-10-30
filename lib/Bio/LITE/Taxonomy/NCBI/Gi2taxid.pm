@@ -105,7 +105,7 @@ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 
 @EXPORT = ();   # Only qualified exports are allowed
 @EXPORT_OK = qw(new_dict);
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 sub new
   {
@@ -193,7 +193,11 @@ sub new_dict {
   croak "$args{in} is empty" unless (defined $last_line);
   my ($last_val) = split /\t/, $last_line;
 
-  my $bin= "\0" x (4 * ($last_val+1));
+  # This line is causing a "panic: memory wrap" problem, so we revert to the old, slow but safe way of setting up the binary data structure:
+#  my $bin= "\0" x (4 * ($last_val+1));
+  my $bin = 0;
+  substr($bin,$_*4,4,pack ("N",0)) for (0..$last_val);
+
 
   while (<$infh>) {
     chomp;

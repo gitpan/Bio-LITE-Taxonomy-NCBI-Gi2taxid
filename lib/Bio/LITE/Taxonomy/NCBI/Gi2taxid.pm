@@ -87,7 +87,7 @@ Any comments should be addressed to emepyc@gmail.com
 
 =head1 LICENSE
 
-Copyright 2009 Miguel Pignatelli, all rights reserved.
+Copyright 2013 Miguel Pignatelli, all rights reserved.
 
 This library is free software; you may redistribute it and/or modify it under the same terms as Perl itself.
 
@@ -105,7 +105,7 @@ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 
 @EXPORT = ();   # Only qualified exports are allowed
 @EXPORT_OK = qw(new_dict);
-$VERSION = '0.09';
+$VERSION = '0.10';
 
 sub new
   {
@@ -171,7 +171,6 @@ sub new_dict {
 
   # TO DO -> Multiple inputs should be allowed
   defined $args{in} or croak "No input dictionary file provided";
-  my $save_mem = (defined $args{save_mem}) && $args{save_mem};
 
   my $outfh;
   if (! defined $args{out}) {
@@ -194,38 +193,18 @@ sub new_dict {
   croak "$args{in} is empty" unless (defined $last_line);
   my ($last_val) = split /\t/, $last_line;
 
-
-  my $bin = 0;
-  unless ($save_mem) {
-  # This line is causing a "panic: memory wrap" problem, so we revert to the old, slow but safe way of setting up the binary data structure:
-#  my $bin= "\0" x (3 * ($last_val+1));
-    substr($bin,$_*4,3,pack ("N",0)) for (0..$last_val);
-  }
-
   while (<$infh>) {
     chomp;
     my ($key,$val) = split /\t/;
     my ($taxid1, $taxid2, $taxid3, $taxid4) = unpack("CCCC", pack("N", $val));
-    if ($save_mem) {
-      sysseek($outfh, $key*3, 0);
-      syswrite($outfh, pack("C", $taxid2), 1);
-      sysseek($outfh, $key*3 + 1, 0);
-      syswrite($outfh, pack("C", $taxid3), 1);
-      sysseek($outfh, $key*3 + 2, 0);
-      syswrite($outfh, pack("C", $taxid4), 1);
-#      syswrite($outfh, unpack("C*", pack("N",$val)) , 3);
-    } else {
-      substr($bin, $key*3, 1, pack("C", $taxid2));
-      substr($bin, $key*3+1, 1, pack("C", $taxid3));
-      substr($bin, $key*3+2, 1, pack("C", $taxid4));
-
-      #    substr($bin,$key*4,4,pack("N",$val));
-    }
+    sysseek($outfh, $key*3, 0);
+    syswrite($outfh, pack("C", $taxid2), 1);
+    sysseek($outfh, $key*3 + 1, 0);
+    syswrite($outfh, pack("C", $taxid3), 1);
+    sysseek($outfh, $key*3 + 2, 0);
+    syswrite($outfh, pack("C", $taxid4), 1);
   }
   close ($infh);
-  unless ($save_mem) {
-    print {$outfh} $bin;
-  }
   if (defined $args{out} && ref \$args{out} eq "SCALAR") {
     close($outfh)}
 }

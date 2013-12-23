@@ -30,3 +30,6 @@ Revision history for Bio-LITE-Taxonomy-NCBI-Gi2taxid
 0.09    Thu Oct 31 12:41:32 2013
 	Added -save_mem option in new_dict
 	Reducing the binary size from 4 bytes per gi to 3 bytes
+
+0.10    Mon Dec 23 11:21:21 2013
+	The -save_mem option of 0.09 is now the only option for creating dicts

@@ -33,3 +33,6 @@ Revision history for Bio-LITE-Taxonomy-NCBI-Gi2taxid
 
 0.10    Mon Dec 23 11:21:21 2013
 	The -save_mem option of 0.09 is now the only option for creating dicts
+
+0.11    Tue Jun 17 15:25:52 2014
+        Fixed some tests

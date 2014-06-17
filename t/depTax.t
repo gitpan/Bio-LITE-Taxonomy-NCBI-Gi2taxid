@@ -16,7 +16,7 @@ my $dict2 = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict => 't/data/dict.bin');
 isa_ok($dict2,"Bio::LITE::Taxonomy::NCBI::Gi2taxid","as filename");
 
 is($dict->get_taxid(0),0,"Uninitilized values");
-is($dict->get_taxid(5),5,"Initilized values");
+is($dict->get_taxid(5),23415,"Initilized values");
 
 done_testing();
 

@@ -36,7 +36,7 @@ The original mapping files can be downloaded from the NCBI site at the following
 
 This function creates a new binary dictionary from the NCBI mapping file. The file should be uncompressed before being passed to the script. The function accepts the following parameters:
 
-*WARNING* version 0.05 uses a more compacted memory file. This means that binary files created with earlier versions will not work with this one and vice-versa. You need to create the new binary db with this version.
+*NOTE* From version 0.05, the lib uses a more compacted memory file. This means that binary files created with earlier versions will not work with this one and vice-versa. You need to create the new binary db with this version.
 
 =over 4
 
@@ -47,6 +47,10 @@ This is the uncompressed mapping file from the NCBI. The function accepts a file
 =item out
 
 Optional. Where the binary dictionary is going to be printed. The function accepts a filename or a filehandle (that should be opened with writing permissions). If absent STDOUT will be assumed.
+
+=item chunk_size
+
+Optional. While bin conversion, the lib stores chunks of data in memory to speed up the conversion. This number specifies the size of the chunks. By default 30Mb is used. The whole chunk is stored in a Perl scalar so be careful not to overflow the scalar capacity.
 
 =back
 
@@ -64,7 +68,7 @@ This is the binary dictionary obtained with the C<new_dict> function. The name o
 
 =item save_mem
 
-Optional. Use this option to avoid to load the binary dictionary into memory. This will save almost 1GB of system memory but looking up for Taxids will be ~20% slower. This option of I<off> by default.
+Optional. Use this option to avoid to load the binary dictionary into memory. This will save almost 1GB of system memory but looking up for Taxids will be ~20% slower. This option is I<off> by default.
 
 =back
 
@@ -98,6 +102,7 @@ use strict;
 use warnings;
 use Carp qw/croak/;
 use File::Tail;
+use POSIX;
 
 use Exporter;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
@@ -105,7 +110,7 @@ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 
 @EXPORT = ();   # Only qualified exports are allowed
 @EXPORT_OK = qw(new_dict);
-$VERSION = '0.11';
+$VERSION = '0.12';
 
 sub new
   {
@@ -193,17 +198,30 @@ sub new_dict {
   croak "$args{in} is empty" unless (defined $last_line);
   my ($last_val) = split /\t/, $last_line;
 
+  my $chunk_size = $args{chunk_size} || 30000000;  # 30Mb -- 10 million records per chunk
+  $chunk_size = floor($chunk_size / 3);
+
+  my $bin_chunk = "\0" x (3 * ($chunk_size));
+  my $n_chunk = 0;
+  my $chunk_pos = $chunk_size * $n_chunk;
+  my $chunk_limit = $chunk_size * ($n_chunk + 1);
   while (<$infh>) {
     chomp;
     my ($key,$val) = split /\t/;
     my ($taxid1, $taxid2, $taxid3, $taxid4) = unpack("CCCC", pack("N", $val));
-    sysseek($outfh, $key*3, 0);
-    syswrite($outfh, pack("C", $taxid2), 1);
-    sysseek($outfh, $key*3 + 1, 0);
-    syswrite($outfh, pack("C", $taxid3), 1);
-    sysseek($outfh, $key*3 + 2, 0);
-    syswrite($outfh, pack("C", $taxid4), 1);
+    if ($key >= $chunk_limit) {
+      print {$outfh} $bin_chunk;
+      $bin_chunk = "\0" x (3 * ($chunk_size));
+      $n_chunk++;
+      $chunk_pos = $chunk_size * $n_chunk;
+      $chunk_limit = $chunk_size * ($n_chunk + 1);
+    }
+    substr($bin_chunk, ($key-$chunk_pos)*3,   1, pack("C", $taxid2));
+    substr($bin_chunk, ($key-$chunk_pos)*3+1, 1, pack("C", $taxid3));
+    substr($bin_chunk, ($key-$chunk_pos)*3+2, 1, pack("C", $taxid4));
   }
+  print {$outfh} $bin_chunk;
+
   close ($infh);
   if (defined $args{out} && ref \$args{out} eq "SCALAR") {
     close($outfh)}

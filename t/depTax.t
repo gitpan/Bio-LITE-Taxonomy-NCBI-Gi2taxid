@@ -17,6 +17,8 @@ isa_ok($dict2,"Bio::LITE::Taxonomy::NCBI::Gi2taxid","as filename");
 
 is($dict->get_taxid(0),0,"Uninitilized values");
 is($dict->get_taxid(5),23415,"Initilized values");
+is($dict->get_taxid(14),23420, "Initialized values");
+is($dict->get_taxid(20),23422, "Initialized last value");
 
 done_testing();
 

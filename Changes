@@ -39,3 +39,6 @@ Revision history for Bio-LITE-Taxonomy-NCBI-Gi2taxid
 
 0.12    Thu Oct 23 11:37:23 2014
 	Reworked creation of dict bin to speed up things
+
+0.13    Wed Dec 3 12:05:42 2014
+        Updated Fail::Tail version dependency

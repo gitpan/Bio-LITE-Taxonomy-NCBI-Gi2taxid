@@ -110,7 +110,7 @@ use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 
 @EXPORT = ();   # Only qualified exports are allowed
 @EXPORT_OK = qw(new_dict);
-$VERSION = '0.12';
+$VERSION = '0.13';
 
 sub new
   {

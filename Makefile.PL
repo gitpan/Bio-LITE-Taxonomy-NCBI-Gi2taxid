@@ -13,7 +13,7 @@ WriteMakefile(
               PL_FILES            => {},
               PREREQ_PM => {
                             'Test::More' => 0,
-                            'File::Tail' => 0.96
+                            'File::Tail' => 0
                            },
               dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
               clean               => { FILES => 'Bio-LITE-Taxonomy-NCBI-Gi2taxid-*' },
